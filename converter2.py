@@ -286,5 +286,37 @@ export async function generateStaticParams() {
 
     print_success("\n\n--- INTELLIGENT CONVERSION COMPLETE! ---")
 
+      # 8. NEW: Create pages-components-list.txt for documentation
+    print_info("\nStep 8: Generating page and component documentation...")
+    report_content = []
+    report_content.append("=====================================")
+    report_content.append("  Site Structure Report")
+    report_content.append("=====================================\n")
+    
+    # Sort pages for consistent output, with the home page first
+    sorted_slugs = sorted(all_pages_data.keys(), key=lambda x: (x != '', x))
+    
+    for slug in sorted_slugs:
+        page_name = "Home Page (`/`)" if slug == "" else f"Page (`/{slug}`)"
+        report_content.append(f"{page_name}:")
+        
+        components = all_pages_data[slug]
+        if not components:
+            report_content.append("  - No components found for this page.\n")
+            continue
+            
+        for component_info in components:
+            component_name = component_info.get('component', 'Unknown Component')
+            report_content.append(f"  -  Component: {component_name}.tsx")
+        
+        report_content.append("") # Add a blank line for readability
+
+    report_path = os.path.join(new_project_path, "pages-components-list.txt")
+    write_to_file(report_path, "\n".join(report_content))
+
+    print_success("\n\n--- INTELLIGENT CONVERSION COMPLETE! ---")
+    print_info(f"A summary of your site structure has been saved to `{nextjs_project_name}/pages-components-list.txt`")
+
 if __name__ == "__main__":
     main()
+
